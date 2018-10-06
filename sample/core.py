@@ -2,14 +2,14 @@ from gpiozero import LED
 import RPi.GPIO as GPIO
 
 class Maison:
-    def __init__(self):
-        self.nom = "Maison"
+    def __init__(Nom):
+        self.nom = Nom
 
 class Piece:
     def __init__(self):
         self.nom = "Piece"
 
-class led:
+class Led:
     def __init__(self, Nom, Gpio):
         self.nom = Nom
         self.gpio = Gpio
@@ -33,3 +33,7 @@ class led:
             return GPIO.input(self.gpio)
         except:
             return -1
+
+Led_test = Led("Chambre1", 4)
+Led_test._turnon_()
+
