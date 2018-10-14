@@ -81,8 +81,7 @@ class Button:
 
 Maison = Home("Maison")
 Maison._AddRoom_("Chambre1")
-Maison.room["Chambre1"]._AddLed_("L1",12)
-Maison.room["Chambre1"].L1._turnon_()
+Maison.room[0]._AddLed_("L1",12)
+Maison.room[0].led[0]._turnon_()
 
-
-gpio.cleanup()
+GPIO.cleanup()
