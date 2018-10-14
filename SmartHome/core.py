@@ -3,13 +3,31 @@ import time
 
 GPIO.setmode(GPIO.BCM)
 
-class Maison:
+class Home:
     def __init__(self, Nom):
         self.nom = Nom
+        self.room = []
 
-class Piece:
-    def __init__(Nom):
+    def _AddRoom_(self, Nom):
+        self.room.append(Room(Nom))
+
+class Room:
+    def __init__(self, Nom):
         self.nom = Nom
+        self.led = []
+        self.button = []
+
+    def _AddLed_(self,Nom,Gpio):
+        self.led.append(Led(Nom, Gpio))
+
+    def _DelLed_(self,Nom):
+        self.led.remove(Nom)
+
+    def _AddButton_(self,Nom,Gpio):
+        self.button.append(Button(Nom, Gpio))
+    
+    def _DelButton_(self, Nom):
+        self.button.remove(Nom)
 
 class Led:
     def __init__(self, Nom, Gpio):
@@ -61,13 +79,10 @@ class Button:
         else:
             return False
 
-## Test Bouton
-bouton = Button('interrupteur', 15)
-led_1 = Led('led', 14) 
-while True:
-    if bouton._checkstate_():
-        led_1._changestate_()
+Maison = Home("Maison")
+Maison._AddRoom_("Chambre1")
+Maison.room["Chambre1"]._AddLed_("L1",12)
+Maison.room["Chambre1"].L1._turnon_()
+
 
 gpio.cleanup()
-
-
