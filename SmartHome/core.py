@@ -1,6 +1,9 @@
 import RPi.GPIO as GPIO
 import time
+import paho.mqtt.client as mqtt
 
+IP_BROKER="192.168.1.15"
+PORT_BROKER=1883
 GPIO.setmode(GPIO.BCM)
 
 class Home:
@@ -79,9 +82,55 @@ class Button:
         else:
             return False
 
+def on_connect(client, userdata, flags, rc):
+    print("Connected with result code "+str(rc))
+    client.subscribe("Maison/#")
+
 Maison = Home("Maison")
 Maison._AddRoom_("Chambre1")
 Maison.room[0]._AddLed_("L1",12)
-Maison.room[0].led[0]._turnon_()
+Maison.room[0]._AddButton_("I1",13)
 
-GPIO.cleanup()
+Maison._AddRoom_("Chambre2")
+Maison.room[1]._AddLed_("L1",14)
+Maison.room[1]._AddButton_("I1", 15)
+
+Maison._AddRoom_("Chambre3")
+Maison.room[2]._AddLed_("L1",16)
+Maison.room[2]._AddButton_("I1", 17)
+
+Maison._AddRoom_("Salon")
+Maison.room[3]._AddLed_("L1", 18)
+Maison.room[3]._AddButton_("I1", 19)
+Maison.room[3]._AddLed_("L2", 20)
+Maison.room[3]._AddButton_("I2", 21)
+
+def on_message(client, userdata, msg):
+    print(msg.topic+" "+str(msg.payload))
+    if msg.topic == "Maison/Chambre1/lumiere":
+        if msg.payload == 'on':
+            Maison.room[0].led[0]._turnon_()
+        if msg.payload == 'off':
+            Maison.room[0].led[0]._turnoff_()
+
+    if msg.topic == "Maison/Chambre2/lumiere":
+        if msg.payload == 'on':
+            Maison.room[1].led[0]._turnon_()
+        if msg.payload == 'off':
+            Maison.room[1].led[0]._turnoff_()    
+
+    if msg.topic == "Maison/Salon/lumiere":
+        if msg.payload == 'on':
+            Maison.room[2].led[0]._turnon_()
+        if msg.payload == 'off':
+            Maison.room[2].led[0]._turnoff_()
+
+try:
+    client = mqtt.Client()
+    client.on_connect = on_connect
+    client.on_message = on_message
+    client.connect(IP_BROKER, PORT_BROKER, 60)
+    client.loop_forever()
+
+except KeyboardInterrupt:
+    GPIO.cleanup()
