@@ -2,7 +2,7 @@ import RPi.GPIO as GPIO
 import time
 import paho.mqtt.client as mqtt
 
-IP_BROKER="192.168.1.15"
+IP_BROKER="localhost"
 PORT_BROKER=1883
 GPIO.setmode(GPIO.BCM)
 
@@ -95,35 +95,41 @@ Maison._AddRoom_("Chambre2")
 Maison.room[1]._AddLed_("L1",14)
 Maison.room[1]._AddButton_("I1", 15)
 
-Maison._AddRoom_("Chambre3")
-Maison.room[2]._AddLed_("L1",16)
-Maison.room[2]._AddButton_("I1", 17)
-
 Maison._AddRoom_("Salon")
-Maison.room[3]._AddLed_("L1", 18)
-Maison.room[3]._AddButton_("I1", 19)
-Maison.room[3]._AddLed_("L2", 20)
-Maison.room[3]._AddButton_("I2", 21)
+Maison.room[2]._AddLed_("L1", 18)
+Maison.room[2]._AddButton_("I1", 19)
+Maison.room[2]._AddLed_("L2", 20)
+Maison.room[2]._AddButton_("I2", 21)
+
+Maison._AddRoom_("Salledebain")
+Maison.room[3]._AddLed_("L1", 22)
+Maison.room[3]._AddButton_("I1", 23)
 
 def on_message(client, userdata, msg):
     print(msg.topic+" "+str(msg.payload))
     if msg.topic == "Maison/Chambre1/lumiere":
-        if msg.payload == 'on':
+        if msg.payload == b'on':
             Maison.room[0].led[0]._turnon_()
-        if msg.payload == 'off':
+        if msg.payload == b'off':
             Maison.room[0].led[0]._turnoff_()
+        if msg.payload == b'changeState':
+            Maison.room[0].led[0]._changestate_()
 
     if msg.topic == "Maison/Chambre2/lumiere":
-        if msg.payload == 'on':
+        if msg.payload == b'on':
             Maison.room[1].led[0]._turnon_()
-        if msg.payload == 'off':
+        if msg.payload == b'off':
             Maison.room[1].led[0]._turnoff_()    
+        if msg.payload == b'changeState':
+            Maison.room[1].led[0]._changestate_()
 
     if msg.topic == "Maison/Salon/lumiere":
-        if msg.payload == 'on':
+        if msg.payload == b'on':
             Maison.room[2].led[0]._turnon_()
-        if msg.payload == 'off':
+        if msg.payload == b'off':
             Maison.room[2].led[0]._turnoff_()
+        if msg.payload == b'changeState':
+            Maison.room[2].led[0]._changestate_()
 
 try:
     client = mqtt.Client()

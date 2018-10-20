@@ -2,7 +2,7 @@
 ## 
 import paho.mqtt.client as mqtt
 
-IP_BROKER="192.168.1.15"
+IP_BROKER="localhost"
 PORT_BROKER=1883
 
 def on_connect(client, userdata, flags, rc):
@@ -12,14 +12,14 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, msg):
     print(msg.topic+" "+str(msg.payload))
     if msg.topic == "Maison/Chambre1/lumiere":
-        if str(msg.payload) == 'on':
+        if str(msg.payload) == b'on':
             print("On")
-        if msg.payload == 'off':
+        if msg.payload == b'off':
             print("Off")
     if msg.topic == "Maison/Salon/lumiere":
-        if msg.payload == 'on':
+        if msg.payload == b'on':
             print("On")
-        if msg.payload == 'off':
+        if msg.payload == b'off':
             print("Off")
 
 client = mqtt.Client()
