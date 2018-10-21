@@ -23,6 +23,9 @@ class Room:
     def _AddLed_(self,Nom,Gpio):
         self.led.append(Led(Nom, Gpio))
 
+    def _AddRgbLed_(self,Nom,Red,Green,Blue):
+        self.led.append(RgbLed(Nom, Red, Green, Blue))
+
     def _DelLed_(self,Nom):
         self.led.remove(Nom)
 
@@ -67,6 +70,46 @@ class Led:
         else:
             self._turnon_()
 
+class RgbLed:
+    def __init__(self, Nom, Red, Green, Blue):
+        self.nom = Nom
+        self.red = Red
+        self.green = Green
+        self.blue = Blue
+        GPIO.setup(self.red, GPIO.OUT)
+        GPIO.setup(self.blue, GPIO.OUT)
+        GPIO.setup(self.green, GPIO.OUT)
+
+    def _turnon_(self, color):
+        if color == "green":
+            gpio = self.green
+        elif color == "blue":
+            gpio = self.blue
+        elif color == "red":
+            gpio = self.red
+        else:
+            return -1
+        try:
+            GPIO.output(gpio, GPIO.HIGH)
+        except:
+            return -1
+        return 0
+        
+    def _turnoff_(self, color):
+        if color == "green":
+            gpio = self.green
+        elif color == "blue":
+            gpio = self.blue
+        elif color == "red":
+            gpio = self.red
+        else:
+            return -1
+        try:
+            GPIO.output(gpio, GPIO.LOW)
+        except:
+            return -1
+        return 0
+
 class Button:
     def __init__(self, Nom, Gpio):
         self.nom = Nom
@@ -88,40 +131,56 @@ def on_connect(client, userdata, flags, rc):
 
 Maison = Home("Maison")
 Maison._AddRoom_("Chambre1")
-Maison.room[0]._AddLed_("L1",12)
-Maison.room[0]._AddButton_("I1",13)
+Maison.room[0]._AddLed_("L1", 7)
+Maison.room[0]._AddLed_("L2", 17)
+Maison.room[0]._AddButton_("I1", 12)
+Maison.room[0]._AddButton_("I2", 27)
 
 Maison._AddRoom_("Chambre2")
-Maison.room[1]._AddLed_("L1",14)
-Maison.room[1]._AddButton_("I1", 15)
+Maison.room[1]._AddLed_("L1", 16)
+Maison.room[1]._AddLed_("L2", 2)
+Maison.room[1]._AddButton_("I1", 20)
+Maison.room[1]._AddButton_("I2", 3)
 
 Maison._AddRoom_("Salon")
-Maison.room[2]._AddLed_("L1", 18)
-Maison.room[2]._AddButton_("I1", 19)
-Maison.room[2]._AddLed_("L2", 20)
-Maison.room[2]._AddButton_("I2", 21)
+Maison.room[2]._AddLed_("L1", 23)
+Maison.room[2]._AddButton_("I1", 24)
 
 Maison._AddRoom_("Salledebain")
-Maison.room[3]._AddLed_("L1", 22)
-Maison.room[3]._AddButton_("I1", 23)
+Maison.room[3]._AddLed_("L1", 25)
+Maison.room[3]._AddButton_("I1", 8)
 
 def on_message(client, userdata, msg):
     print(msg.topic+" "+str(msg.payload))
-    if msg.topic == "Maison/Chambre1/lumiere":
+    if msg.topic == "Maison/Chambre1/lumiere1":
         if msg.payload == b'on':
             Maison.room[0].led[0]._turnon_()
         if msg.payload == b'off':
             Maison.room[0].led[0]._turnoff_()
         if msg.payload == b'changeState':
             Maison.room[0].led[0]._changestate_()
+    if msg.topic == "Maison/Chambre1/lumiere2":
+        if msg.payload == b'on':
+            Maison.room[0].led[1]._turnon_()
+        if msg.payload == b'off':
+            Maison.room[0].led[1]._turnoff_()
+        if msg.payload == b'changeState':
+            Maison.room[0].led[1]._changestate_()
 
-    if msg.topic == "Maison/Chambre2/lumiere":
+    if msg.topic == "Maison/Chambre2/lumiere1":
         if msg.payload == b'on':
             Maison.room[1].led[0]._turnon_()
         if msg.payload == b'off':
             Maison.room[1].led[0]._turnoff_()    
         if msg.payload == b'changeState':
             Maison.room[1].led[0]._changestate_()
+    if msg.topic == "Maison/Chambre2/lumiere2":
+        if msg.payload == b'on':
+            Maison.room[1].led[1]._turnon_()
+        if msg.payload == b'off':
+            Maison.room[1].led[1]._turnoff_()    
+        if msg.payload == b'changeState':
+            Maison.room[1].led[1]._changestate_()
 
     if msg.topic == "Maison/Salon/lumiere":
         if msg.payload == b'on':
@@ -130,6 +189,14 @@ def on_message(client, userdata, msg):
             Maison.room[2].led[0]._turnoff_()
         if msg.payload == b'changeState':
             Maison.room[2].led[0]._changestate_()
+
+    if msg.topic == "Maison/Sdb/lumiere":
+        if msg.payload == b'on':
+            Maison.room[3].led[0]._turnon_()
+        if msg.payload == b'off':
+            Maison.room[3].led[0]._turnoff_()
+        if msg.payload == b'changeState':
+            Maison.room[3].led[0]._changestate_()
 
 try:
     client = mqtt.Client()
