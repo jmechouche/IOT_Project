@@ -1,7 +1,7 @@
 import RPi.GPIO as GPIO
 import time
 import paho.mqtt.client as mqtt
-import sleep
+from time import sleep
 
 IP_BROKER="localhost"
 PORT_BROKER=1883
@@ -238,22 +238,39 @@ def on_message(client, userdata, msg):
 
     if msg.topic == "Maison/scenario1":
         Maison.room[2].led[0]._turnon_("blue")
-        sleep(5)
+        sleep(3)
         Maison.room[3].led[0]._turnon_()
-        sleep(5)
+        sleep(3)
         Maison.room[2].led[0]._turnon_("green")
         Maison.room[3].led[0]._turnoff_()
-        sleep(5)
+        sleep(3)
         Maison.room[2].led[0]._turnoff_("blue")
-        Maison.room[0].led[0]._turnon_()
-        sleep(5)
-        Maison.room[2].led[0]._turnoff_("green")
         Maison.room[0].led[1]._turnon_()
-        sleep(2)
-        Maison.room[0].led[0]._turnoff_()
-        sleep(5)
+        sleep(3)
+        Maison.room[2].led[0]._turnoff_("green")
+        Maison.room[0].led[0]._turnon_()
+        sleep(3)
         Maison.room[0].led[1]._turnoff_()
+        sleep(3)
+        Maison.room[0].led[0]._turnoff_()
 
+    if msg.topic == "Maison/scenario2":
+        Maison.room[2].led[0]._turnon_("red")
+        sleep(3)
+        Maison.room[3].led[0]._turnon_()
+        sleep(3)
+        Maison.room[2].led[0]._turnon_("blue")
+        Maison.room[3].led[0]._turnoff_()
+        sleep(3)
+        Maison.room[2].led[0]._turnoff_("red")
+        Maison.room[1].led[1]._turnon_()
+        sleep(3)
+        Maison.room[2].led[0]._turnoff_("blue")
+        Maison.room[1].led[0]._turnon_()
+        sleep(3)
+        Maison.room[1].led[1]._turnoff_()
+        sleep(3)
+        Maison.room[1].led[0]._turnoff_()
 
 try:
     client = mqtt.Client()
