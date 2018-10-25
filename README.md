@@ -8,11 +8,11 @@ Le projet se reposant integralement sur Mqtt il est nécessaire d'avoir un broke
 ## Serveur Python
 Pour demarrer le serveur python il suffit de ce placer dans le dossier du projet puis d'executer la commande suivante
   python SmartHome/core.py
-Attention si le broker Mqtt n'est pas hébergé en local il fadra changer la valeur de la variable IP_BROKER et renseigner l'adresse IP du broker
+Attention si le broker Mqtt n'est pas hébergé en local il faudra changer la valeur de la variable IP_BROKER et renseigner l'adresse IP du broker
 
 ## Serveur Web
 Pour lancer le serveur Web, il faut avoir installer django et lancer la commande suivante dans le repertoire du projet:
   python manage.py runserver
-Les deux pages web sont accessible via les deux liens suivants:
+Les deux pages web sont accessibles via les deux liens suivants:
 http://{IP}/LedManager/accueil
 http://{IP}/LedManager/LedManage
